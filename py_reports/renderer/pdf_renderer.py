@@ -62,6 +62,12 @@ class PDFRenderer:
                 if custom_css_path.exists():
                     css_docs.append(CSS(filename=str(custom_css_path), font_config=self.font_config))
             
+            # Add page CSS for pagination if available
+            if 'page_css' in context:
+                page_css_content = context['page_css']
+                if page_css_content:
+                    css_docs.append(CSS(string=page_css_content, font_config=self.font_config))
+            
             # Render PDF
             pdf_doc = html_doc.render(stylesheets=css_docs, font_config=self.font_config)
             
@@ -110,6 +116,12 @@ class PDFRenderer:
                 custom_css_path = self.templates_dir / context['config']['css_file']
                 if custom_css_path.exists():
                     css_docs.append(CSS(filename=str(custom_css_path), font_config=self.font_config))
+            
+            # Add page CSS for pagination if available
+            if 'page_css' in context:
+                page_css_content = context['page_css']
+                if page_css_content:
+                    css_docs.append(CSS(string=page_css_content, font_config=self.font_config))
             
             # Render PDF
             pdf_doc = html_doc.render(stylesheets=css_docs, font_config=self.font_config)

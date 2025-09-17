@@ -84,28 +84,6 @@
 
     <!-- Page Break Styles -->
     <style>
-      @page {
-        size: A4;
-        margin: 2cm 1.5cm 2cm 1.5cm;
-
-        @top-center {
-          content: "{{ t('header.report_title') if config.header and config.header.title_key else 'Report' }}";
-          font-size: 12px;
-          font-weight: bold;
-        }
-
-        @bottom-center {
-          content: "{{ t('footer.page_x_of_y', x='counter(page)', y='counter(pages)') }}";
-          font-size: 10px;
-        }
-      }
-
-      @page :first {
-        @top-center {
-          content: "{{ t('header.report_title') if config.header and config.header.title_key else 'Report' }} - {{ t('header.date_range', from_date=parameters.date_from|date, to_date=parameters.date_to|date) if parameters.date_from and parameters.date_to else '' }}";
-        }
-      }
-
       .page-break {
         page-break-before: always;
       }

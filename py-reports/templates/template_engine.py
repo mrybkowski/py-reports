@@ -172,10 +172,27 @@ class TemplateEngine:
             'parameters': parameters or {},
             'locale': self.locale,
             'translator': self.translator,
-            'formatter': self.formatter
+            'formatter': self.formatter,
+            'pagination_text': self._get_pagination_text()
         }
         
         return context
+    
+    def _get_pagination_text(self) -> str:
+        """Get pagination text for current locale."""
+        # Get the translation for page_x_of_y
+        translation = self.translator.translate('footer.page_x_of_y', self.locale, x='', y='')
+        
+        # Extract the text parts for WeasyPrint CSS
+        if 'Strona' in translation and 'z' in translation:
+            # Polish format: "Strona {x} z {y}"
+            return "Strona"
+        elif 'Page' in translation and 'of' in translation:
+            # English format: "Page {x} of {y}"
+            return "Page"
+        else:
+            # Fallback to Polish
+            return "Strona"
 
 
 # Global template engine instance

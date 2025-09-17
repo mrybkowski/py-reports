@@ -1,23 +1,5 @@
 {% extends "base.html" %} {% block content %}
 <div class="report-content">
-  <div class="summary mt-4">
-    <h2>{{ t('monitoring.summary.title') }}</h2>
-    <table>
-      <tr>
-        <td>{{ t('monitoring.summary.total_monitoring') }}:</td>
-        <td>{{ report.main_data.summary.total_monitoring }}</td>
-      </tr>
-      <tr>
-        <td>{{ t('monitoring.summary.stationary_count') }}:</td>
-        <td>{{ report.main_data.summary.stationary_count }}</td>
-      </tr>
-      <tr>
-        <td>{{ t('monitoring.summary.mobile_count') }}:</td>
-        <td>{{ report.main_data.summary.mobile_count }}</td>
-      </tr>
-    </table>
-  </div>
-
   {% if report.main_data.table.rows %}
   <div class="table-container">
     <table class="data-table">

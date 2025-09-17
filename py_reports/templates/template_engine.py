@@ -172,10 +172,71 @@ class TemplateEngine:
             'parameters': parameters or {},
             'locale': self.locale,
             'translator': self.translator,
-            'formatter': self.formatter
+            'formatter': self.formatter,
+            'pagination_css': self._get_pagination_css(),
+            'page_css': self._get_page_css()
         }
         
         return context
+    
+    def _get_pagination_css(self) -> str:
+        """Get pagination CSS for current locale."""
+        # Get the translation for page_x_of_y
+        translation = self.translator.translate('footer.page_x_of_y', self.locale, x='', y='')
+        
+        # Extract the text parts for WeasyPrint CSS
+        if 'Page' in translation and 'of' in translation:
+            # English format: "Page {x} of {y}"
+            return 'content: "Page " counter(page) " of " counter(pages);'
+        elif 'Strona' in translation and 'z' in translation:
+            # Polish format: "Strona {x} z {y}" - use English for CSS compatibility
+            return 'content: "Page " counter(page) " of " counter(pages);'
+        else:
+            # Fallback to English
+            return 'content: "Page " counter(page) " of " counter(pages);'
+    
+    def _get_page_css(self) -> str:
+        """Get complete @page CSS with pagination for current locale."""
+        pagination_css = self._get_pagination_css()
+        
+        # Use English for CSS compatibility
+        header_title = "Report"
+        
+        return f"""
+        @page {{
+          size: A4;
+          margin: 2cm 1.5cm 2cm 1.5cm;
+
+          @top-center {{
+            content: "{header_title}";
+            font-size: 12px;
+            font-weight: bold;
+          }}
+
+          @bottom-center {{
+            {pagination_css}
+            font-size: 10px;
+          }}
+        }}
+
+        @page :first {{
+          @top-center {{
+            content: "{header_title} - Date Range";
+          }}
+        }}
+
+        .page-break {{
+          page-break-before: always;
+        }}
+
+        .page-break-after {{
+          page-break-after: always;
+        }}
+
+        .no-page-break {{
+          page-break-inside: avoid;
+        }}
+        """
 
 
 # Global template engine instance
@@ -186,6 +247,6 @@ def get_template_engine(templates_dir: str = "py_reports/templates",
                        locale: str = "en_US") -> TemplateEngine:
     """Get template engine instance (singleton pattern)."""
     global _template_engine
-    if _template_engine is None:
+    if _template_engine is None or _template_engine.locale != locale:
         _template_engine = TemplateEngine(templates_dir, locale)
     return _template_engine
