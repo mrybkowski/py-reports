@@ -1,0 +1,305 @@
+{% extends "base.html" %} {% block content %}
+<div class="report-content">
+  <h1>{{ t('report.persons.title') }}</h1>
+
+  {% if config.summary and config.summary.enabled %}
+  <div class="summary mb-3">
+    <h3>{{ t('persons.summary.title') }}</h3>
+    <div class="summary-stats">
+      <div class="stat-item">
+        <span class="stat-label"
+          >{{ t('persons.summary.total_persons') }}:</span
+        >
+        <span class="stat-value">{{ report.main_data.row_count }}</span>
+      </div>
+      {% if report.main_data.summary %}
+      <div class="stat-item">
+        <span class="stat-label">{{ t('persons.summary.male_count') }}:</span>
+        <span class="stat-value"
+          >{{ report.main_data.summary.male_count or 0 }}</span
+        >
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">{{ t('persons.summary.female_count') }}:</span>
+        <span class="stat-value"
+          >{{ report.main_data.summary.female_count or 0 }}</span
+        >
+      </div>
+      <div class="stat-item">
+        <span class="stat-label"
+          >{{ t('persons.summary.with_email_count') }}:</span
+        >
+        <span class="stat-value"
+          >{{ report.main_data.summary.with_email_count or 0 }}</span
+        >
+      </div>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %} {% if report.main_data.table and report.main_data.table.rows %}
+  <div class="table-container">
+    <h3>{{ t('persons.table.title') }}</h3>
+    <div class="table-responsive">
+      <table class="persons-table">
+        <thead>
+          <tr>
+            {% for column in config.columns %}
+            <th
+              class="text-{{ column.align }}"
+              style="width: {{ column.width }}"
+            >
+              {{ t(column.label_key) if column.label_key else column.label }}
+            </th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in report.main_data.table.rows %}
+          <tr class="person-row">
+            {% for column in config.columns %}
+            <td class="text-{{ column.align }}">
+              {% if column.name == "IdAsString" %}
+              <span class="person-id">{{ row[column.field] or "" }}</span>
+              {% elif column.name == "Title" %}
+              <span class="person-title">{{ row[column.field] or "" }}</span>
+              {% elif column.name == "FirstName" %}
+              <span class="person-first-name"
+                >{{ row[column.field] or "" }}</span
+              >
+              {% elif column.name == "LastName" %}
+              <span class="person-last-name"
+                >{{ row[column.field] or "" }}</span
+              >
+              {% elif column.name == "FullName" %}
+              <span class="person-full-name"
+                >{{ row[column.field] or "" }}</span
+              >
+              {% elif column.name == "Email" %} {% if row[column.field] %}
+              <span class="person-email">{{ row[column.field] }}</span>
+              {% else %}
+              <span class="text-muted">{{ t('common.no_data') }}</span>
+              {% endif %} {% elif column.name == "PhoneNumber1" or column.name
+              == "PhoneNumber2" %} {% if row[column.field] %}
+              <span class="person-phone">{{ row[column.field]|phone }}</span>
+              {% else %}
+              <span class="text-muted">{{ t('common.no_data') }}</span>
+              {% endif %} {% elif column.name == "NationalIdentifier" %}
+              <span class="person-national-id"
+                >{{ row[column.field] or "" }}</span
+              >
+              {% elif column.name == "DateOfBirth" %} {% if row[column.field] %}
+              <span class="person-dob">{{ row[column.field]|date }}</span>
+              {% else %}
+              <span class="text-muted">{{ t('common.no_data') }}</span>
+              {% endif %} {% elif column.name == "Sex" %}
+              <span
+                class="person-sex sex-{{ (row[column.field] or '').lower() }}"
+              >
+                {{ row[column.field] or "" }}
+              </span>
+              {% elif column.name == "Groups" %} {% if row[column.field] and
+              row[column.field]|length > 0 %}
+              <div class="person-groups">
+                {% for group in row[column.field] %}
+                <span class="group-tag">{{ group }}</span>
+                {% endfor %}
+              </div>
+              {% else %}
+              <span class="text-muted">{{ t('common.no_data') }}</span>
+              {% endif %} {% elif column.name == "Created.Timestamp" %} {% if
+              row[column.field] %}
+              <span class="person-created"
+                >{{ row[column.field]|datetime }}</span
+              >
+              {% else %}
+              <span class="text-muted">{{ t('common.no_data') }}</span>
+              {% endif %} {% else %} {{ row[column.field] or "" }} {% endif %}
+            </td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% else %}
+  <div class="no-data">
+    <p>{{ t('persons.no_data') }}</p>
+  </div>
+  {% endif %} {% if report.main_data.table and report.main_data.table.totals %}
+  <div class="totals">
+    <h4>{{ t('persons.totals.title') }}</h4>
+    <table class="totals-table">
+      <tbody>
+        <tr>
+          <td class="total-label">{{ t('persons.totals.total_persons') }}:</td>
+          <td class="total-value">
+            {{ report.main_data.table.totals.total_persons or
+            report.main_data.row_count }}
+          </td>
+        </tr>
+        {% if report.main_data.table.totals.male_count is defined %}
+        <tr>
+          <td class="total-label">{{ t('persons.totals.male_count') }}:</td>
+          <td class="total-value">
+            {{ report.main_data.table.totals.male_count }}
+          </td>
+        </tr>
+        {% endif %} {% if report.main_data.table.totals.female_count is defined
+        %}
+        <tr>
+          <td class="total-label">{{ t('persons.totals.female_count') }}:</td>
+          <td class="total-value">
+            {{ report.main_data.table.totals.female_count }}
+          </td>
+        </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+</div>
+
+<style>
+  .persons-table {
+    font-size: 10px;
+  }
+
+  .person-row:hover {
+    background-color: #f8f9fa;
+  }
+
+  .person-id {
+    font-weight: bold;
+    color: #007bff;
+  }
+
+  .person-title {
+    font-weight: bold;
+    color: #6c757d;
+  }
+
+  .person-first-name {
+    font-weight: 500;
+  }
+
+  .person-last-name {
+    font-weight: bold;
+  }
+
+  .person-full-name {
+    font-weight: 500;
+    color: #2c3e50;
+  }
+
+  .person-email {
+    color: #007bff;
+    text-decoration: underline;
+  }
+
+  .person-phone {
+    font-family: monospace;
+  }
+
+  .person-national-id {
+    font-family: monospace;
+    font-size: 9px;
+  }
+
+  .person-dob {
+    font-size: 9px;
+  }
+
+  .person-sex {
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 9px;
+  }
+
+  .sex-male {
+    color: #007bff;
+  }
+
+  .sex-female {
+    color: #e83e8c;
+  }
+
+  .person-groups {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+  }
+
+  .group-tag {
+    background-color: #e9ecef;
+    color: #495057;
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-size: 8px;
+    white-space: nowrap;
+  }
+
+  .person-created {
+    font-size: 9px;
+    color: #6c757d;
+  }
+
+  .summary-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+
+  .stat-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    border-left: 4px solid #007bff;
+  }
+
+  .stat-label {
+    font-weight: 500;
+    color: #495057;
+  }
+
+  .stat-value {
+    font-weight: bold;
+    color: #007bff;
+    font-size: 16px;
+  }
+
+  .totals-table {
+    width: 300px;
+    margin-top: 15px;
+  }
+
+  .totals-table td {
+    padding: 4px 8px;
+    border: none;
+  }
+
+  .total-label {
+    font-weight: 500;
+    color: #495057;
+  }
+
+  .total-value {
+    font-weight: bold;
+    color: #2c3e50;
+    text-align: right;
+  }
+
+  @media print {
+    .persons-table {
+      font-size: 9px;
+    }
+
+    .group-tag {
+      font-size: 7px;
+    }
+  }
+</style>
+{% endblock %}

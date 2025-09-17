@@ -1,0 +1,239 @@
+# Persons Report Configuration
+name: "persons"
+description: "Raport osób - lista wszystkich osób w systemie"
+collection: "Person"
+template: "persons_report.html"
+
+# Header configuration
+header:
+  show_logo: true
+  logo_path: "logo.png"
+  title_key: "report.persons.title"
+  show_date_range: false
+  show_generation_time: true
+
+# Footer configuration
+footer:
+  title_key: "footer.page_x_of_y"
+  show_page_numbers: true
+  show_report_id: true
+  environment: "production"
+
+# Columns configuration
+columns:
+  - name: "IdAsString"
+    field: "IdAsString"
+    label: "ID"
+    label_key: "persons.id"
+    type: "string"
+    width: "80px"
+    align: "center"
+    sortable: true
+
+  - name: "Title"
+    field: "Title"
+    label: "Title"
+    label_key: "persons.title"
+    type: "string"
+    width: "60px"
+    align: "center"
+    sortable: true
+
+  - name: "FirstName"
+    field: "FirstName"
+    label: "First Name"
+    label_key: "persons.first_name"
+    type: "string"
+    width: "120px"
+    align: "left"
+    sortable: true
+
+  - name: "SecondName"
+    field: "SecondName"
+    label: "Second Name"
+    label_key: "persons.second_name"
+    type: "string"
+    width: "120px"
+    align: "left"
+    sortable: true
+
+  - name: "LastName"
+    field: "LastName"
+    label: "Last Name"
+    label_key: "persons.last_name"
+    type: "string"
+    width: "150px"
+    align: "left"
+    sortable: true
+
+  - name: "FullName"
+    field: "FullName"
+    label: "Full Name"
+    label_key: "persons.full_name"
+    type: "string"
+    width: "200px"
+    align: "left"
+    sortable: true
+
+  - name: "Email"
+    field: "Email"
+    label: "Email"
+    label_key: "persons.email"
+    type: "string"
+    width: "180px"
+    align: "left"
+    sortable: true
+
+  - name: "PhoneNumber1"
+    field: "PhoneNumber1"
+    label: "Phone 1"
+    label_key: "persons.phone1"
+    type: "string"
+    width: "120px"
+    align: "left"
+    sortable: true
+
+  - name: "PhoneNumber2"
+    field: "PhoneNumber2"
+    label: "Phone 2"
+    label_key: "persons.phone2"
+    type: "string"
+    width: "120px"
+    align: "left"
+    sortable: true
+
+  - name: "NationalIdentifier"
+    field: "NationalIdentifier"
+    label: "National ID"
+    label_key: "persons.national_id"
+    type: "string"
+    width: "120px"
+    align: "center"
+    sortable: true
+
+  - name: "DateOfBirth"
+    field: "DateOfBirth"
+    label: "Date of Birth"
+    label_key: "persons.date_of_birth"
+    type: "date"
+    width: "100px"
+    align: "center"
+    sortable: true
+    format: "short"
+
+  - name: "Sex"
+    field: "Sex"
+    label: "Sex"
+    label_key: "persons.sex"
+    type: "string"
+    width: "80px"
+    align: "center"
+    sortable: true
+
+  - name: "Groups"
+    field: "Groups"
+    label: "Groups"
+    label_key: "persons.groups"
+    type: "array"
+    width: "200px"
+    align: "left"
+    sortable: false
+    format: "join"
+
+  - name: "Created.Timestamp"
+    field: "Created.Timestamp"
+    label: "Created"
+    label_key: "persons.created"
+    type: "datetime"
+    width: "150px"
+    align: "center"
+    sortable: true
+    format: "short"
+
+# MongoDB aggregation pipeline
+pipeline:
+  - $match: {}
+  - $addFields:
+      FullName:
+        $concat:
+          - { $ifNull: ["$LastName", ""] }
+          - " "
+          - { $ifNull: ["$FirstName", ""] }
+  - $sort:
+      LastName: 1
+      FirstName: 1
+  - $limit: 100
+  - $project:
+      _id: 1
+      IdAsString: 1
+      Title: 1
+      FirstName: 1
+      SecondName: 1
+      LastName: 1
+      PhoneNumber1: 1
+      PhoneNumber2: 1
+      Email: 1
+      NationalIdentifier: 1
+      DateOfBirth: 1
+      Sex: 1
+      ImportantInformation: 1
+      FullName: 1
+      Groups: 1
+      Created: 1
+      Updated: 1
+
+# Grouping configuration
+grouping:
+  enabled: false
+
+# Summary configuration
+summary:
+  enabled: true
+  fields:
+    - name: "total_persons"
+      label_key: "persons.summary.total_persons"
+      type: "count"
+    - name: "male_count"
+      label_key: "persons.summary.male_count"
+      type: "count"
+      filter: "Sex:Male"
+    - name: "female_count"
+      label_key: "persons.summary.female_count"
+      type: "count"
+      filter: "Sex:Female"
+    - name: "with_email_count"
+      label_key: "persons.summary.with_email_count"
+      type: "count"
+      filter: "Email:!="
+
+# Parameters
+parameters:
+  sex_filter:
+    type: "string"
+    required: false
+    description: "Filter by sex (Male/Female)"
+    default: ""
+
+  group_filter:
+    type: "string"
+    required: false
+    description: "Filter by group name"
+    default: ""
+
+  has_email:
+    type: "boolean"
+    required: false
+    description: "Show only persons with email"
+    default: false
+
+  sort_by:
+    type: "string"
+    required: false
+    description: "Sort field (LastName, FirstName, DateOfBirth)"
+    default: "LastName"
+
+  sort_order:
+    type: "string"
+    required: false
+    description: "Sort order (asc/desc)"
+    default: "asc"

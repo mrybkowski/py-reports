@@ -1,0 +1,169 @@
+{% extends "base.html" %} {% block content %}
+<div class="report-content">
+  <!-- Report Title -->
+  <h1>{{ t('report.sales.title') }}</h1>
+
+  <!-- Date Range -->
+  {% if parameters.date_from and parameters.date_to %}
+  <div class="date-range mb-3">
+    <strong
+      >{{ t('header.date_range', from_date=parameters.date_from|date,
+      to_date=parameters.date_to|date) }}</strong
+    >
+  </div>
+  {% endif %}
+
+  <!-- Summary Statistics -->
+  {% if report.main_data.table.totals %}
+  <div class="summary mb-4">
+    <h3>{{ t('common.totals') }}</h3>
+    <table class="table">
+      <tbody>
+        <tr>
+          <td><strong>{{ t('report.sales.totals.total_net') }}</strong></td>
+          <td class="text-right">
+            {{ report.main_data.table.totals.net_amount.sum|currency('PLN') }}
+          </td>
+        </tr>
+        <tr>
+          <td><strong>{{ t('report.sales.totals.total_gross') }}</strong></td>
+          <td class="text-right">
+            {{ report.main_data.table.totals.gross_amount.sum|currency('PLN') }}
+          </td>
+        </tr>
+        <tr>
+          <td><strong>{{ t('report.sales.totals.total_vat') }}</strong></td>
+          <td class="text-right">
+            {{ report.main_data.table.totals.vat_amount.sum|currency('PLN') }}
+          </td>
+        </tr>
+        <tr>
+          <td><strong>{{ t('report.sales.totals.row_count') }}</strong></td>
+          <td class="text-right">
+            {{ report.main_data.table.totals.quantity.count|number }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+
+  <!-- Main Data Table -->
+  {% if report.main_data.table %}
+  <div class="table-container">
+    <h3>{{ t('report.sales.title') }}</h3>
+    <table class="table">
+      <thead>
+        <tr>
+          {% for header in report.main_data.table.headers %}
+          <th class="{{ header.align }}">{{ t(header.label) }}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in report.main_data.table.rows %}
+        <tr>
+          {% for header in report.main_data.table.headers %}
+          <td class="{{ header.align }}">
+            {{ row[header.field].formatted_value }}
+          </td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+
+  <!-- Pivot Table -->
+  {% if report.main_data.pivot %}
+  <div class="pivot-table page-break">
+    <h3>{{ t('report.sales.title') }} - {{ t('common.pivot') }}</h3>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th class="row-header">{{ t('report.sales.columns.customer') }}</th>
+          {% for column in report.main_data.pivot.column_values %}
+          <th class="text-center">{{ column }}</th>
+          {% endfor %}
+          <th class="text-center total-column">{{ t('common.total') }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in report.main_data.pivot.pivot_table %}
+        <tr>
+          <td class="row-header">{{ row.row_label }}</td>
+          {% for column in report.main_data.pivot.column_values %}
+          <td class="text-right">
+            {% if row.cells[column].total_net %} {{
+            row.cells[column].total_net|currency('PLN') }} {% else %} - {% endif
+            %}
+          </td>
+          {% endfor %}
+          <td class="text-right total-column">
+            {{ row.row_totals.total_net|currency('PLN') }}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+      {% if report.main_data.pivot.totals.column_totals %}
+      <tfoot>
+        <tr class="total-row">
+          <td class="row-header"><strong>{{ t('common.total') }}</strong></td>
+          {% for column in report.main_data.pivot.column_values %}
+          <td class="text-right">
+            {% if report.main_data.pivot.totals.column_totals[column].total_net
+            %} {{
+            report.main_data.pivot.totals.column_totals[column].total_net|currency('PLN')
+            }} {% else %} - {% endif %}
+          </td>
+          {% endfor %}
+          <td class="text-right grand-total">
+            {{
+            report.main_data.pivot.totals.grand_totals.total_net|currency('PLN')
+            }}
+          </td>
+        </tr>
+      </tfoot>
+      {% endif %}
+    </table>
+  </div>
+  {% endif %}
+
+  <!-- Subreports -->
+  {% if report.subreports %} {% for subreport in report.subreports %}
+  <div class="subreport page-break">
+    <h3 class="subreport-title">{{ subreport.name }}</h3>
+
+    {% if subreport.data %}
+    <table class="table">
+      <thead>
+        <tr>
+          <th>{{ t('common.date') }}</th>
+          <th>{{ t('common.amount') }}</th>
+          <th>{{ t('common.status') }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in subreport.data %}
+        <tr>
+          <td>{{ row.date|date }}</td>
+          <td class="text-right">{{ row.amount|currency('PLN') }}</td>
+          <td>{{ row.status }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div class="no-data">{{ t('common.no_data') }}</div>
+    {% endif %}
+  </div>
+  {% endfor %} {% endif %}
+
+  <!-- Report Footer -->
+  <div class="report-footer mt-5">
+    <p class="text-muted">{{ t('footer.generated_by') }} - {{ now }}</p>
+  </div>
+</div>
+{% endblock %}

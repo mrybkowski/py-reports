@@ -1,0 +1,137 @@
+# Sales Report Configuration
+name: "sales"
+description: "Monthly sales analysis report"
+collection: "sales"
+
+# MongoDB aggregation pipeline
+pipeline:
+  - $match:
+      date:
+        $gte: "{{date_from}}"
+        $lte: "{{date_to}}"
+  - $lookup:
+      from: "customers"
+      localField: "customer_id"
+      foreignField: "_id"
+      as: "customer"
+  - $unwind:
+      path: "$customer"
+      preserveNullAndEmptyArrays: true
+  - $lookup:
+      from: "products"
+      localField: "product_id"
+      foreignField: "_id"
+      as: "product"
+  - $unwind:
+      path: "$product"
+      preserveNullAndEmptyArrays: true
+  - $addFields:
+      net_amount:
+        $multiply: ["$quantity", "$unit_price"]
+      gross_amount:
+        $multiply: ["$quantity", "$unit_price", 1.23] # 23% VAT
+      vat_amount:
+        $multiply: ["$quantity", "$unit_price", 0.23]
+  - $project:
+      _id: 1
+      date: 1
+      customer_name: "$customer.name"
+      product_name: "$product.name"
+      quantity: 1
+      unit_price: 1
+      net_amount: 1
+      gross_amount: 1
+      vat_amount: 1
+      vat_rate: 0.23
+  - $sort:
+      date: -1
+
+# Main template
+template: "sales_report.html"
+
+# Table columns
+columns:
+  - label: "report.sales.columns.date"
+    field: "date"
+    type: "date"
+    format: "short"
+    align: "left"
+    width: "15%"
+  - label: "report.sales.columns.customer"
+    field: "customer_name"
+    type: "string"
+    align: "left"
+    width: "25%"
+  - label: "report.sales.columns.product"
+    field: "product_name"
+    type: "string"
+    align: "left"
+    width: "25%"
+  - label: "report.sales.columns.quantity"
+    field: "quantity"
+    type: "number"
+    format: "#,##0"
+    align: "right"
+    width: "10%"
+  - label: "report.sales.columns.unit_price"
+    field: "unit_price"
+    type: "currency"
+    format: "PLN"
+    align: "right"
+    width: "12%"
+  - label: "report.sales.columns.net_amount"
+    field: "net_amount"
+    type: "currency"
+    format: "PLN"
+    align: "right"
+    width: "13%"
+
+# Pivot table configuration
+pivot:
+  rows: ["customer_name"]
+  columns: ["product_name"]
+  measures:
+    - name: "total_quantity"
+      field: "quantity"
+      type: "sum"
+    - name: "total_net"
+      field: "net_amount"
+      type: "sum"
+  show_totals: true
+  show_grand_total: true
+  column_order: "alphabetical"
+  max_columns: 50
+
+# Header configuration
+header:
+  show_logo: true
+  logo_path: "logo.png"
+  title_key: "report.sales.title"
+  show_date_range: true
+  show_generation_time: true
+
+# Footer configuration
+footer:
+  title_key: "footer.page_x_of_y"
+  show_page_numbers: true
+  show_report_id: true
+  environment: "production"
+
+# Parameters
+parameters:
+  date_from:
+    type: "date"
+    required: true
+    description: "Start date for the report"
+  date_to:
+    type: "date"
+    required: true
+    description: "End date for the report"
+  customer_id:
+    type: "array"
+    required: false
+    description: "Filter by customer IDs"
+  status:
+    type: "string"
+    required: false
+    description: "Filter by order status"

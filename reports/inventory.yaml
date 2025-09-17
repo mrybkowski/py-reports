@@ -1,0 +1,111 @@
+# Inventory Report Configuration
+name: "inventory"
+description: "Current inventory status report"
+collection: "inventory"
+
+# MongoDB aggregation pipeline
+pipeline:
+  - $match:
+      status: "active"
+  - $lookup:
+      from: "products"
+      localField: "product_id"
+      foreignField: "_id"
+      as: "product"
+  - $unwind:
+      path: "$product"
+      preserveNullAndEmptyArrays: true
+  - $lookup:
+      from: "categories"
+      localField: "product.category_id"
+      foreignField: "_id"
+      as: "category"
+  - $unwind:
+      path: "$category"
+      preserveNullAndEmptyArrays: true
+  - $addFields:
+      total_value:
+        $multiply: ["$stock_quantity", "$unit_cost"]
+      last_updated:
+        $ifNull: ["$last_updated", "$created_at"]
+  - $project:
+      _id: 1
+      product_code: "$product.code"
+      product_name: "$product.name"
+      category_name: "$category.name"
+      stock_quantity: 1
+      unit_cost: 1
+      total_value: 1
+      last_updated: 1
+      status: 1
+  - $sort:
+      category_name: 1
+      product_name: 1
+
+# Main template
+template: "inventory_report.html"
+
+# Table columns
+columns:
+  - label: "report.inventory.columns.product_code"
+    field: "product_code"
+    type: "string"
+    align: "left"
+    width: "15%"
+  - label: "report.inventory.columns.product_name"
+    field: "product_name"
+    type: "string"
+    align: "left"
+    width: "30%"
+  - label: "report.inventory.columns.category"
+    field: "category_name"
+    type: "string"
+    align: "left"
+    width: "20%"
+  - label: "report.inventory.columns.stock_quantity"
+    field: "stock_quantity"
+    type: "number"
+    format: "#,##0"
+    align: "right"
+    width: "12%"
+  - label: "report.inventory.columns.unit_cost"
+    field: "unit_cost"
+    type: "currency"
+    format: "PLN"
+    align: "right"
+    width: "12%"
+  - label: "report.inventory.columns.total_value"
+    field: "total_value"
+    type: "currency"
+    format: "PLN"
+    align: "right"
+    width: "11%"
+
+# Header configuration
+header:
+  show_logo: true
+  logo_path: "logo.png"
+  title_key: "report.inventory.title"
+  show_generation_time: true
+
+# Footer configuration
+footer:
+  title_key: "footer.page_x_of_y"
+  show_page_numbers: true
+  show_report_id: true
+  environment: "production"
+
+# Parameters
+parameters:
+  category_id:
+    type: "array"
+    required: false
+    description: "Filter by category IDs"
+  min_stock:
+    type: "number"
+    required: false
+    description: "Minimum stock quantity filter"
+  max_stock:
+    type: "number"
+    required: false
+    description: "Maximum stock quantity filter"

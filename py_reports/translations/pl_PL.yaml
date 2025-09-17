@@ -1,0 +1,143 @@
+# Polish (Poland) translations
+report:
+  sales:
+    title: "Raport sprzedaży"
+    description: "Miesięczny raport analizy sprzedaży"
+    columns:
+      date: "Data"
+      customer: "Kontrahent"
+      product: "Produkt"
+      quantity: "Ilość"
+      unit_price: "Cena jednostkowa"
+      net_amount: "Kwota netto"
+      gross_amount: "Kwota brutto"
+      vat_rate: "Stawka VAT"
+      vat_amount: "Kwota VAT"
+    filters:
+      date_from: "Data od"
+      date_to: "Data do"
+      status: "Status"
+      customer_id: "ID kontrahenta"
+    totals:
+      total_net: "Suma netto"
+      total_gross: "Suma brutto"
+      total_vat: "Suma VAT"
+      row_count: "Liczba rekordów"
+
+  inventory:
+    title: "Raport magazynowy"
+    columns:
+      product_code: "Kod produktu"
+      product_name: "Nazwa produktu"
+      category: "Kategoria"
+      stock_quantity: "Stan magazynowy"
+      unit_cost: "Koszt jednostkowy"
+      total_value: "Wartość całkowita"
+
+  persons:
+    title: "Raport osób"
+    description: "Lista wszystkich osób w systemie"
+    table:
+      title: "Lista osób"
+    summary:
+      title: "Statystyki podsumowujące"
+      total_persons: "Łączna liczba osób"
+      male_count: "Mężczyźni"
+      female_count: "Kobiety"
+      with_email_count: "Z adresem email"
+    totals:
+      title: "Podsumowanie"
+      total_persons: "Łączna liczba osób"
+      male_count: "Liczba mężczyzn"
+      female_count: "Liczba kobiet"
+    columns:
+      id: "ID"
+      title: "Tytuł"
+      first_name: "Imię"
+      second_name: "Drugie imię"
+      last_name: "Nazwisko"
+      full_name: "Imię i nazwisko"
+      email: "Email"
+      phone1: "Telefon 1"
+      phone2: "Telefon 2"
+      national_id: "PESEL"
+      date_of_birth: "Data urodzenia"
+      sex: "Płeć"
+      groups: "Grupy"
+      created: "Utworzono"
+    no_data: "Nie znaleziono osób"
+
+header:
+  company_name: "Nazwa Twojej Firmy"
+  report_title: "Tytuł raportu"
+  date_range: "Zakres dat: {{from_date}} - {{to_date}}"
+  generated_at: "Wygenerowano: {{timestamp}}"
+  page: "Strona"
+
+footer:
+  page_x_of_y: "Strona {{x}} z {{y}}"
+  report_id: "ID raportu: {{report_id}}"
+  environment: "Środowisko: {{environment}}"
+  generated_by: "Wygenerowano przez System Raportów PDF"
+
+common:
+  total: "Suma"
+  subtotal: "Suma częściowa"
+  grand_total: "Suma całkowita"
+  no_data: "Brak danych"
+  loading: "Ładowanie..."
+  error: "Błąd"
+  success: "Sukces"
+  yes: "Tak"
+  no: "Nie"
+  currency:
+    pln: "PLN"
+    usd: "USD"
+    eur: "EUR"
+  status:
+    active: "Aktywny"
+    inactive: "Nieaktywny"
+    pending: "Oczekujący"
+    completed: "Zakończony"
+    cancelled: "Anulowany"
+
+format:
+  date: "dd.MM.yyyy"
+  datetime: "dd.MM.yyyy HH:mm"
+  time: "HH:mm"
+  currency: "#,##0.00 zł"
+  number: "#,##0.00"
+  percentage: "0,00%"
+
+persons:
+  title: "Raport osób"
+  description: "Lista wszystkich osób w systemie"
+  table:
+    title: "Lista osób"
+  summary:
+    title: "Statystyki podsumowujące"
+    total_persons: "Łączna liczba osób"
+    male_count: "Mężczyźni"
+    female_count: "Kobiety"
+    with_email_count: "Z adresem email"
+  totals:
+    title: "Podsumowanie"
+    total_persons: "Łączna liczba osób"
+    male_count: "Liczba mężczyzn"
+    female_count: "Liczba kobiet"
+  columns:
+    id: "ID"
+    title: "Tytuł"
+    first_name: "Imię"
+    second_name: "Drugie imię"
+    last_name: "Nazwisko"
+    full_name: "Imię i nazwisko"
+    email: "Email"
+    phone1: "Telefon 1"
+    phone2: "Telefon 2"
+    national_id: "PESEL"
+    date_of_birth: "Data urodzenia"
+    sex: "Płeć"
+    groups: "Grupy"
+    created: "Utworzono"
+  no_data: "Nie znaleziono osób"
