@@ -1,0 +1,160 @@
+name: "monitoring"
+description_key: "monitoring.description"
+template: "monitoring_report.html"
+collection: "Person"
+
+header:
+  show_logo: false
+  title_key: "monitoring.title"
+  show_date_range: false
+  show_generation_time: true
+
+footer:
+  title_key: "footer.page_x_of_y"
+  show_page_numbers: true
+  show_report_id: true
+  environment: "production"
+
+columns:
+  - name: "LP"
+    field: "LP"
+    label: "LP"
+    label_key: "monitoring.columns.lp"
+    type: "number"
+    width: "50px"
+    align: "center"
+    sortable: true
+
+  - name: "PersonId"
+    field: "IdAsString"
+    label: "ID Osoby"
+    label_key: "monitoring.columns.person_id"
+    type: "string"
+    width: "100px"
+    align: "center"
+    sortable: true
+
+  - name: "PersonNID"
+    field: "NationalIdentifier"
+    label: "NID Osoby"
+    label_key: "monitoring.columns.person_nid"
+    type: "string"
+    width: "120px"
+    align: "center"
+    sortable: true
+
+  - name: "IsStationary"
+    field: "IsStationary"
+    label: "Stacjonarne"
+    label_key: "monitoring.columns.is_stationary"
+    type: "boolean"
+    width: "80px"
+    align: "center"
+    sortable: true
+
+  - name: "Zones"
+    field: "Zones"
+    label: "Strefy"
+    label_key: "monitoring.columns.zones"
+    type: "array"
+    width: "150px"
+    align: "left"
+    sortable: false
+    format: "join"
+
+  - name: "MonitoringStart"
+    field: "MonitoringStart"
+    label: "Start Monitoringu"
+    label_key: "monitoring.columns.monitoring_start"
+    type: "datetime"
+    width: "150px"
+    align: "center"
+    sortable: true
+    format: "short"
+
+  - name: "PlannedEnd"
+    field: "PlannedEnd"
+    label: "Planowane Zakończenie"
+    label_key: "monitoring.columns.planned_end"
+    type: "datetime"
+    width: "150px"
+    align: "center"
+    sortable: true
+    format: "short"
+
+  - name: "Duration"
+    field: "Duration"
+    label: "Czas Trwania"
+    label_key: "monitoring.columns.duration"
+    type: "string"
+    width: "120px"
+    align: "center"
+    sortable: true
+
+# MongoDB aggregation pipeline
+pipeline:
+  - $match:
+      "Monitorings.PersonStatus": "InMonitoring"
+  - $unwind: "$Monitorings"
+  - $match:
+      "Monitorings.PersonStatus": "InMonitoring"
+  - $addFields:
+      LP: { $add: ["$_id", 0] }
+      IsStationary: { $ifNull: ["$Monitorings.IsStationary", false] }
+      Zones: { $ifNull: ["$Monitorings.Zones", []] }
+      MonitoringStart: "$Monitorings.ValidFrom"
+      PlannedEnd: "$Monitorings.ValidTo"
+      Duration: "Obliczane w aplikacji"
+  - $sort:
+      MonitoringStart: 1
+  - $limit: 100
+  - $project:
+      _id: 1
+      IdAsString: 1
+      NationalIdentifier: 1
+      LP: 1
+      IsStationary: 1
+      Zones: 1
+      MonitoringStart: 1
+      PlannedEnd: 1
+      Duration: 1
+
+# Grouping configuration
+grouping:
+  enabled: false
+
+# Summary configuration
+summary:
+  enabled: true
+  fields:
+    - name: "total_monitoring"
+      label_key: "monitoring.summary.total_monitoring"
+      type: "count"
+    - name: "stationary_count"
+      label_key: "monitoring.summary.stationary_count"
+      type: "count"
+      filter: "IsStationary:true"
+    - name: "mobile_count"
+      label_key: "monitoring.summary.mobile_count"
+      type: "count"
+      filter: "IsStationary:false"
+
+# Parameters
+parameters:
+  status_filter:
+    type: "string"
+    required: false
+    description: "Filtr statusu monitoringu"
+    default: "InMonitoring"
+
+  person_id_filter:
+    type: "string"
+    required: false
+    description: "Filtr ID osoby"
+    default: ""
+
+  stationary_filter:
+    type: "boolean"
+    required: false
+    description: "Filtr stacjonarny/mobilny"
+    default: null

@@ -1,0 +1,103 @@
+{% extends "base.html" %} {% block content %}
+<div class="report-content">
+  <div class="summary mt-4">
+    <h2>{{ t('monitoring.summary.title') }}</h2>
+    <table>
+      <tr>
+        <td>{{ t('monitoring.summary.total_monitoring') }}:</td>
+        <td>{{ report.main_data.summary.total_monitoring }}</td>
+      </tr>
+      <tr>
+        <td>{{ t('monitoring.summary.stationary_count') }}:</td>
+        <td>{{ report.main_data.summary.stationary_count }}</td>
+      </tr>
+      <tr>
+        <td>{{ t('monitoring.summary.mobile_count') }}:</td>
+        <td>{{ report.main_data.summary.mobile_count }}</td>
+      </tr>
+    </table>
+  </div>
+
+  {% if report.main_data.table.rows %}
+  <div class="table-container">
+    <table class="data-table">
+      <thead>
+        <tr>
+          {% for column in config.columns %}
+          <th class="text-{{ column.align | default('left') }}">
+            {{ t(column.label_key) if column.label_key else column.label }}
+          </th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in report.main_data.table.rows %}
+        <tr class="monitoring-row">
+          {% for column in config.columns %}
+          <td class="text-{{ column.align }}">
+            {% set cell_data = row[column.field] %} {% if
+            cell_data.formatted_value %} {% if column.name == "LP" %}
+            <span class="monitoring-lp">{{ cell_data.formatted_value }}</span>
+            {% elif column.name == "PersonId" %}
+            <span class="monitoring-person-id"
+              >{{ cell_data.formatted_value }}</span
+            >
+            {% elif column.name == "PersonNID" %}
+            <span class="monitoring-person-nid"
+              >{{ cell_data.formatted_value }}</span
+            >
+            {% elif column.name == "IsStationary" %}
+            <span class="monitoring-stationary">
+              {% if cell_data.formatted_value == "True" or
+              cell_data.formatted_value == "true" %} {{ t('common.yes') }} {%
+              else %} {{ t('common.no') }} {% endif %}
+            </span>
+            {% elif column.name == "Zones" %}
+            <div class="monitoring-zones">{{ cell_data.formatted_value }}</div>
+            {% elif column.name == "MonitoringStart" %}
+            <span class="monitoring-start"
+              >{{ cell_data.formatted_value }}</span
+            >
+            {% elif column.name == "PlannedEnd" %}
+            <span class="monitoring-end">{{ cell_data.formatted_value }}</span>
+            {% elif column.name == "Duration" %}
+            <span class="monitoring-duration"
+              >{{ cell_data.formatted_value }}</span
+            >
+            {% else %}
+            <span class="monitoring-field"
+              >{{ cell_data.formatted_value }}</span
+            >
+            {% endif %} {% else %}
+            <span class="text-muted">{{ t('common.no_data') }}</span>
+            {% endif %}
+          </td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <p class="no-data">{{ t('monitoring.no_data') }}</p>
+  {% endif %}
+
+  <div class="totals mt-5">
+    <h2>{{ t('monitoring.totals.title') }}</h2>
+    <table>
+      <tr>
+        <td>{{ t('monitoring.totals.total_monitoring') }}:</td>
+        <td>{{ report.main_data.summary.total_monitoring }}</td>
+      </tr>
+      <tr>
+        <td>{{ t('monitoring.totals.stationary_count') }}:</td>
+        <td>{{ report.main_data.summary.stationary_count }}</td>
+      </tr>
+      <tr>
+        <td>{{ t('monitoring.totals.mobile_count') }}:</td>
+        <td>{{ report.main_data.summary.mobile_count }}</td>
+      </tr>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -32,6 +32,22 @@ class PivotConfig(BaseModel):
     max_columns: int = Field(default=200, description="Maximum number of columns")
 
 
+class SummaryFieldConfig(BaseModel):
+    """Summary field configuration."""
+    
+    name: str = Field(..., description="Field name")
+    label_key: str = Field(..., description="Translation key for field label")
+    type: str = Field(default="count", description="Field type (count, sum, avg, etc.)")
+    filter: Optional[str] = Field(default=None, description="Filter condition (field:value)")
+
+
+class SummaryConfig(BaseModel):
+    """Summary configuration."""
+    
+    enabled: bool = Field(default=True, description="Enable summary")
+    fields: List[SummaryFieldConfig] = Field(default=[], description="Summary fields")
+
+
 class SubreportConfig(BaseModel):
     """Subreport configuration."""
     
@@ -68,6 +84,9 @@ class ReportConfig(BaseModel):
     # Table configurations
     columns: List[ColumnConfig] = Field(default=[], description="Table columns")
     pivot: Optional[PivotConfig] = Field(default=None, description="Pivot table configuration")
+    
+    # Summary
+    summary: Optional[SummaryConfig] = Field(default=None, description="Summary configuration")
     
     # Layout
     header: Optional[HeaderFooterConfig] = Field(default=None, description="Header configuration")

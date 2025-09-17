@@ -122,7 +122,79 @@ class ReportGenerator:
             )
             processed_data['pivot'] = pivot_data
         
+        # Process summary if configured
+        if report_config.summary and report_config.summary.enabled:
+            summary_data = self._process_summary(data, report_config.summary)
+            processed_data['summary'] = summary_data
+        
         return processed_data
+    
+    def _process_summary(self, data: list, summary_config) -> Dict[str, Any]:
+        """Process summary statistics based on configuration."""
+        summary = {}
+        
+        for field in summary_config.fields:
+            field_name = field.name
+            field_type = field.type
+            field_filter = getattr(field, 'filter', None)
+            
+            if field_type == "count":
+                if field_filter:
+                    # Apply filter
+                    filtered_data = self._apply_filter(data, field_filter)
+                    summary[field_name] = len(filtered_data)
+                else:
+                    summary[field_name] = len(data)
+            else:
+                # For other types, just count for now
+                summary[field_name] = len(data)
+        
+        return summary
+    
+    def _apply_filter(self, data: list, filter_str: str) -> list:
+        """Apply filter to data."""
+        if not filter_str:
+            return data
+        
+        filtered_data = []
+        for row in data:
+            if self._matches_filter(row, filter_str):
+                filtered_data.append(row)
+        
+        return filtered_data
+    
+    def _matches_filter(self, row: dict, filter_str: str) -> bool:
+        """Check if row matches filter."""
+        if ":" not in filter_str:
+            return True
+        
+        field, condition = filter_str.split(":", 1)
+        
+        # Get nested value
+        value = self._get_nested_value(row, field)
+        
+        if condition == "!=":
+            return value is not None and value != ""
+        elif condition.startswith("="):
+            return str(value) == condition[1:]
+        elif condition.startswith("!="):
+            return str(value) != condition[2:]
+        else:
+            return str(value) == condition
+    
+    def _get_nested_value(self, row: dict, field: str) -> Any:
+        """Get nested value from row."""
+        if "." in field:
+            parts = field.split(".")
+            value = row
+            for part in parts:
+                if isinstance(value, dict) and part in value:
+                    value = value[part]
+                else:
+                    return None
+            return value
+        else:
+            return row.get(field)
     
     def _process_subreports(self, report_config: ReportConfig, 
                           parameters: Dict[str, Any]) -> list:

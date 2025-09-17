@@ -1,0 +1,401 @@
+/* Global CSS styles for PDF reports */
+
+/* Reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "DejaVu Sans", Arial, sans-serif;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #333;
+  background: #fff;
+}
+
+/* Typography */
+h1 {
+  font-size: 24px;
+  font-weight: bold;
+  color: #2c3e50;
+  margin-bottom: 10px;
+  border-bottom: 3px solid #3498db;
+  padding-bottom: 5px;
+}
+
+h2 {
+  font-size: 18px;
+  font-weight: bold;
+  color: #34495e;
+  margin: 20px 0 10px 0;
+  border-bottom: 2px solid #ecf0f1;
+  padding-bottom: 3px;
+}
+
+h3 {
+  font-size: 16px;
+  font-weight: bold;
+  color: #34495e;
+  margin: 15px 0 8px 0;
+}
+
+p {
+  margin-bottom: 8px;
+}
+
+.description {
+  font-style: italic;
+  color: #7f8c8d;
+  margin-bottom: 20px;
+}
+
+/* Layout */
+.report-content {
+  /* padding: 20px; */
+  max-width: 100%;
+}
+
+/* Tables - Global Styles */
+.table-container {
+  width: 100%;
+  overflow: visible;
+  margin: 15px 0;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  font-size: 11px;
+  table-layout: fixed;
+}
+
+.data-table th,
+.data-table td {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Table Headers */
+.data-table thead {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  color: white;
+}
+
+.data-table thead th {
+  padding: 12px 8px;
+  text-align: left;
+  font-weight: bold;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+  position: relative;
+}
+
+.data-table thead th:last-child {
+  border-right: none;
+}
+
+/* Table Body */
+.data-table tbody tr {
+  border-bottom: 1px solid #ecf0f1;
+  transition: background-color 0.2s ease;
+}
+
+.data-table tbody tr:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+.data-table tbody tr:nth-child(odd) {
+  background-color: #fff;
+}
+
+.data-table tbody tr:hover {
+  background-color: #e8f4f8;
+}
+
+.data-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+/* Table Cells */
+.data-table td {
+  padding: 10px 8px;
+  vertical-align: top;
+  border-right: 1px solid #ecf0f1;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.data-table td:last-child {
+  border-right: none;
+}
+
+/* Text Alignment */
+.text-left {
+  text-align: left;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.text-right {
+  text-align: right;
+}
+
+/* Specific Column Styles */
+.person-id,
+.monitoring-lp {
+  font-weight: bold;
+  color: #2c3e50;
+  font-family: "Courier New", monospace;
+}
+
+.person-title,
+.monitoring-person-id {
+  font-weight: bold;
+  color: #e74c3c;
+}
+
+.person-first-name,
+.person-last-name,
+.person-full-name {
+  color: #2c3e50;
+  font-weight: 500;
+}
+
+.person-email,
+.monitoring-person-nid {
+  color: #27ae60;
+  font-family: "Courier New", monospace;
+  font-size: 10px;
+}
+
+.person-phone {
+  color: #8e44ad;
+  font-family: "Courier New", monospace;
+}
+
+.person-national-id,
+.monitoring-person-nid {
+  color: #e67e22;
+  font-family: "Courier New", monospace;
+  font-size: 10px;
+}
+
+.person-dob,
+.monitoring-start,
+.monitoring-end {
+  color: #34495e;
+  font-family: "Courier New", monospace;
+  font-size: 10px;
+}
+
+.person-sex {
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 10px;
+}
+
+.sex-male {
+  color: #3498db;
+}
+
+.sex-female {
+  color: #e91e63;
+}
+
+.person-groups,
+.monitoring-zones {
+  font-size: 10px;
+  color: #7f8c8d;
+  line-height: 1.2;
+}
+
+.group-tag {
+  display: inline-block;
+  background: #ecf0f1;
+  color: #2c3e50;
+  padding: 2px 6px;
+  margin: 1px 2px;
+  border-radius: 3px;
+  font-size: 9px;
+  font-weight: 500;
+}
+
+.person-created,
+.monitoring-duration {
+  color: #95a5a6;
+  font-size: 10px;
+  font-family: "Courier New", monospace;
+}
+
+/* Monitoring specific styles */
+.monitoring-stationary {
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 10px;
+}
+
+.monitoring-field {
+  color: #2c3e50;
+}
+
+/* Summary and Totals Tables */
+.summary,
+.totals {
+  margin: 20px 0;
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  padding: 15px;
+}
+
+.summary table,
+.totals table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.summary table td,
+.totals table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid #dee2e6;
+  font-size: 12px;
+}
+
+.summary table td:first-child,
+.totals table td:first-child {
+  font-weight: bold;
+  color: #2c3e50;
+  width: 40%;
+}
+
+.summary table td:last-child,
+.totals table td:last-child {
+  color: #27ae60;
+  font-weight: bold;
+  text-align: right;
+}
+
+/* Status indicators */
+.text-muted {
+  color: #95a5a6;
+  font-style: italic;
+  font-size: 10px;
+}
+
+.no-data {
+  text-align: center;
+  color: #95a5a6;
+  font-style: italic;
+  padding: 40px;
+  background: #f8f9fa;
+  border: 2px dashed #dee2e6;
+  border-radius: 6px;
+  margin: 20px 0;
+}
+
+/* Page breaks */
+.page-break {
+  page-break-before: always;
+}
+
+.no-page-break {
+  page-break-inside: avoid;
+}
+
+/* Row styling */
+.person-row,
+.monitoring-row {
+  transition: all 0.2s ease;
+}
+
+.person-row:hover,
+.monitoring-row:hover {
+  background-color: #e8f4f8 !important;
+  transform: scale(1.001);
+}
+
+/* Responsive adjustments */
+@media print {
+  .table-container {
+    box-shadow: none;
+    border: 1px solid #ddd;
+  }
+
+  .data-table tbody tr:hover {
+    background-color: transparent;
+  }
+
+  .person-row:hover,
+  .monitoring-row:hover {
+    transform: none;
+  }
+}
+
+/* Utility classes */
+.mt-4 {
+  margin-top: 1rem;
+}
+.mt-5 {
+  margin-top: 1.5rem;
+}
+.mb-4 {
+  margin-bottom: 1rem;
+}
+.mb-5 {
+  margin-bottom: 1.5rem;
+}
+
+/* Header and Footer */
+.report-header {
+  border-bottom: 3px solid #3498db;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+.report-footer {
+  border-top: 1px solid #ecf0f1;
+  padding-top: 10px;
+  margin-top: 20px;
+  font-size: 10px;
+  color: #7f8c8d;
+  text-align: center;
+}
+
+/* Loading and error states */
+.loading {
+  text-align: center;
+  color: #3498db;
+  font-style: italic;
+  padding: 20px;
+}
+
+.error {
+  text-align: center;
+  color: #e74c3c;
+  background: #fdf2f2;
+  border: 1px solid #fecaca;
+  border-radius: 4px;
+  padding: 15px;
+  margin: 10px 0;
+}
+
+.success {
+  text-align: center;
+  color: #27ae60;
+  background: #f0f9f0;
+  border: 1px solid #c3e6c3;
+  border-radius: 4px;
+  padding: 15px;
+  margin: 10px 0;
+}
