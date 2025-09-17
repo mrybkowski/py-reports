@@ -1,0 +1,162 @@
+# Persons Report Configuration
+name: "monitored-persons"
+description: "Raport osób - lista wszystkich osób w systemie"
+collection: "Person"
+template: "persons_report.html"
+
+# Header configuration
+header:
+  show_logo: true
+  logo_path: "logo.png"
+  title_key: "report.persons.title"
+  show_date_range: false
+  show_generation_time: true
+
+# Footer configuration
+footer:
+  title_key: "footer.page_x_of_y"
+  show_page_numbers: true
+  show_report_id: true
+  environment: "production"
+
+# Columns configuration
+columns:
+  - name: "IdAsString"
+    field: "IdAsString"
+    label: "Monitored Person ID"
+    label_key: "persons.id"
+    type: "string"
+    width: "120px"
+    align: "center"
+    sortable: true
+  - name: "NationalIdentifier"
+    field: "NationalIdentifier"
+    label: "Monitored Person NID"
+    label_key: "persons.national_id"
+    type: "string"
+    width: "120px"
+    align: "center"
+    sortable: true
+  - name: "StationaryRestritions"
+    field: "StationaryRestritions"
+    label: "Stationary Restritions"
+    label_key: "persons.stationary_restritions"
+    type: "string"
+    width: "120px"
+    align: "center"
+  - name: "ZoneRestrictions"
+    field: "ZoneRestrictions"
+    label: "Zone Restrictions"
+    label_key: "persons.zone_restrictions"
+    type: "string"
+    width: "120px"
+    align: "center"
+  - name: "ActualStartDate"
+    field: "ActualStartDate"
+    label: "Actual Start Date"
+    label_key: "persons.actual_start_date"
+    type: "datetime"
+    width: "120px"
+    align: "center"
+  - name: "PlannedEndDate"
+    field: "PlannedEndDate"
+    label: "Planned End Date"
+    label_key: "persons.planned_end_date"
+    type: "datetime"
+    width: "120px"
+    align: "center"
+  - name: "SentenceLength"
+    field: "SentenceLength"
+    label: "Sentence Length"
+    label_key: "persons.sentence_length"
+    type: "number"
+    width: "120px"
+    align: "center"
+
+# MongoDB aggregation pipeline
+pipeline:
+  - $match: {}
+  - $addFields:
+      FullName:
+        $concat:
+          - { $ifNull: ["$LastName", ""] }
+          - " "
+          - { $ifNull: ["$FirstName", ""] }
+  - $sort:
+      LastName: 1
+      FirstName: 1
+  - $limit: 100
+  - $project:
+      _id: 1
+      IdAsString: 1
+      Title: 1
+      FirstName: 1
+      SecondName: 1
+      LastName: 1
+      PhoneNumber1: 1
+      PhoneNumber2: 1
+      Email: 1
+      NationalIdentifier: 1
+      DateOfBirth: 1
+      Sex: 1
+      ImportantInformation: 1
+      FullName: 1
+      Groups: 1
+      Created: 1
+      Updated: 1
+
+# Grouping configuration
+grouping:
+  enabled: false
+
+# Summary configuration
+summary:
+  enabled: true
+  fields:
+    - name: "total_persons"
+      label_key: "persons.summary.total_persons"
+      type: "count"
+    - name: "male_count"
+      label_key: "persons.summary.male_count"
+      type: "count"
+      filter: "Sex:Male"
+    - name: "female_count"
+      label_key: "persons.summary.female_count"
+      type: "count"
+      filter: "Sex:Female"
+    - name: "with_email_count"
+      label_key: "persons.summary.with_email_count"
+      type: "count"
+      filter: "Email:!="
+
+# Parameters
+parameters:
+  sex_filter:
+    type: "string"
+    required: false
+    description: "Filter by sex (Male/Female)"
+    default: ""
+
+  group_filter:
+    type: "string"
+    required: false
+    description: "Filter by group name"
+    default: ""
+
+  has_email:
+    type: "boolean"
+    required: false
+    description: "Show only persons with email"
+    default: false
+
+  sort_by:
+    type: "string"
+    required: false
+    description: "Sort field (LastName, FirstName, DateOfBirth)"
+    default: "LastName"
+
+  sort_order:
+    type: "string"
+    required: false
+    description: "Sort order (asc/desc)"
+    default: "asc"

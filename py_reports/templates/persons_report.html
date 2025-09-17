@@ -58,62 +58,63 @@
           <tr class="person-row">
             {% for column in config.columns %}
             <td class="text-{{ column.align }}">
-              {% if column.name == "IdAsString" %}
-              <span class="person-id">{{ row[column.field] or "" }}</span>
+              {% set cell_data = row[column.field] %} {% if
+              cell_data.formatted_value %} {% if column.name == "IdAsString" %}
+              <span class="person-id">{{ cell_data.formatted_value }}</span>
               {% elif column.name == "Title" %}
-              <span class="person-title">{{ row[column.field] or "" }}</span>
+              <span class="person-title">{{ cell_data.formatted_value }}</span>
               {% elif column.name == "FirstName" %}
               <span class="person-first-name"
-                >{{ row[column.field] or "" }}</span
+                >{{ cell_data.formatted_value }}</span
               >
               {% elif column.name == "LastName" %}
               <span class="person-last-name"
-                >{{ row[column.field] or "" }}</span
+                >{{ cell_data.formatted_value }}</span
+              >
+              {% elif column.name == "StationaryRestritions" %}
+              <span class="person-stationary-restritions"
+                >{{ cell_data.formatted_value }}</span
+              >
+              {% elif column.name == "ZoneRestrictions" %}
+              <span class="person-zone-restrictions"
+                >{{ cell_data.formatted_value }}</span
+              >
+              {% elif column.name == "ActualStartDate" %}
+              <span class="person-actual-start-date"
+                >{{ cell_data.formatted_value }}</span
               >
               {% elif column.name == "FullName" %}
               <span class="person-full-name"
-                >{{ row[column.field] or "" }}</span
+                >{{ cell_data.formatted_value }}</span
               >
-              {% elif column.name == "Email" %} {% if row[column.field] %}
-              <span class="person-email">{{ row[column.field] }}</span>
-              {% else %}
-              <span class="text-muted">{{ t('common.no_data') }}</span>
-              {% endif %} {% elif column.name == "PhoneNumber1" or column.name
-              == "PhoneNumber2" %} {% if row[column.field] %}
-              <span class="person-phone">{{ row[column.field]|phone }}</span>
-              {% else %}
-              <span class="text-muted">{{ t('common.no_data') }}</span>
-              {% endif %} {% elif column.name == "NationalIdentifier" %}
+              {% elif column.name == "Email" %}
+              <span class="person-email">{{ cell_data.formatted_value }}</span>
+              {% elif column.name == "PhoneNumber1" or column.name ==
+              "PhoneNumber2" %}
+              <span class="person-phone">{{ cell_data.formatted_value }}</span>
+              {% elif column.name == "NationalIdentifier" %}
               <span class="person-national-id"
-                >{{ row[column.field] or "" }}</span
+                >{{ cell_data.formatted_value }}</span
               >
-              {% elif column.name == "DateOfBirth" %} {% if row[column.field] %}
-              <span class="person-dob">{{ row[column.field]|date }}</span>
-              {% else %}
-              <span class="text-muted">{{ t('common.no_data') }}</span>
-              {% endif %} {% elif column.name == "Sex" %}
+              {% elif column.name == "DateOfBirth" %}
+              <span class="person-dob">{{ cell_data.formatted_value }}</span>
+              {% elif column.name == "Sex" %}
               <span
-                class="person-sex sex-{{ (row[column.field] or '').lower() }}"
+                class="person-sex sex-{{ (cell_data.formatted_value or '').lower() }}"
               >
-                {{ row[column.field] or "" }}
+                {{ cell_data.formatted_value }}
               </span>
-              {% elif column.name == "Groups" %} {% if row[column.field] and
-              row[column.field]|length > 0 %}
-              <div class="person-groups">
-                {% for group in row[column.field] %}
-                <span class="group-tag">{{ group }}</span>
-                {% endfor %}
-              </div>
-              {% else %}
-              <span class="text-muted">{{ t('common.no_data') }}</span>
-              {% endif %} {% elif column.name == "Created.Timestamp" %} {% if
-              row[column.field] %}
+              {% elif column.name == "Groups" %}
+              <div class="person-groups">{{ cell_data.formatted_value }}</div>
+              {% elif column.name == "Created.Timestamp" %}
               <span class="person-created"
-                >{{ row[column.field]|datetime }}</span
+                >{{ cell_data.formatted_value }}</span
               >
               {% else %}
+              <span class="person-field">{{ cell_data.formatted_value }}</span>
+              {% endif %} {% else %}
               <span class="text-muted">{{ t('common.no_data') }}</span>
-              {% endif %} {% else %} {{ row[column.field] or "" }} {% endif %}
+              {% endif %}
             </td>
             {% endfor %}
           </tr>

@@ -141,3 +141,29 @@ persons:
     groups: "Grupy"
     created: "Utworzono"
   no_data: "Nie znaleziono osób"
+
+monitoring:
+  title: "Raport Monitoringu"
+  description: "Lista osób w trakcie monitoringu"
+  table:
+    title: "Lista Monitoringu"
+  summary:
+    title: "Statystyki Monitoringu"
+    total_monitoring: "Łączna liczba monitoringu"
+    stationary_count: "Stacjonarne"
+    mobile_count: "Mobilne"
+  totals:
+    title: "Podsumowanie Monitoringu"
+    total_monitoring: "Łączna liczba monitoringu"
+    stationary_count: "Liczba stacjonarnych"
+    mobile_count: "Liczba mobilnych"
+  columns:
+    lp: "LP"
+    person_id: "ID Osoby"
+    person_nid: "NID Osoby"
+    is_stationary: "Stacjonarne"
+    zones: "Strefy"
+    monitoring_start: "Start Monitoringu"
+    planned_end: "Planowane Zakończenie"
+    duration: "Czas Trwania"
+  no_data: "Nie znaleziono danych monitoringu"
