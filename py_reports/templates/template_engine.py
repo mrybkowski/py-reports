@@ -185,15 +185,15 @@ class TemplateEngine:
         translation = self.translator.translate('footer.page_x_of_y', self.locale, x='', y='')
         
         # Extract the text parts for WeasyPrint CSS
-        if 'Page' in translation and 'of' in translation:
+        if 'Strona' in translation and 'z' in translation:
+            # Polish format: "Strona {x} z {y}"
+            return 'content: "Strona: " counter(page) " z " counter(pages);'
+        elif 'Page' in translation and 'of' in translation:
             # English format: "Page {x} of {y}"
-            return 'content: "Page " counter(page) " of " counter(pages);'
-        elif 'Strona' in translation and 'z' in translation:
-            # Polish format: "Strona {x} z {y}" - use English for CSS compatibility
-            return 'content: "Page " counter(page) " of " counter(pages);'
+            return 'content: "Page: " counter(page) " of " counter(pages);'
         else:
             # Fallback to English
-            return 'content: "Page " counter(page) " of " counter(pages);'
+            return 'content: "Page: " counter(page) " of " counter(pages);'
     
     def _get_page_css(self) -> str:
         """Get complete @page CSS with pagination for current locale."""
@@ -201,6 +201,13 @@ class TemplateEngine:
         
         # Use English for CSS compatibility
         header_title = "Report"
+        
+        # Get current date for generation date
+        from datetime import datetime
+        current_date = datetime.now().strftime("%Y-%m-%d %H:%M")
+        
+        # Get translated "Generated" text
+        generated_text = self.translator.translate('footer.generated', self.locale)
         
         return f"""
         @page {{
@@ -213,8 +220,13 @@ class TemplateEngine:
             font-weight: bold;
           }}
 
-          @bottom-center {{
+          @bottom-right {{
             {pagination_css}
+            font-size: 10px;
+          }}
+
+          @bottom-left {{
+            content: "{generated_text}: {current_date}";
             font-size: 10px;
           }}
         }}

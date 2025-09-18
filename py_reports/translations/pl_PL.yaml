@@ -79,6 +79,7 @@ footer:
   report_id: "ID raportu: {{report_id}}"
   environment: "Środowisko: {{environment}}"
   generated_by: "Wygenerowano przez System Raportów PDF"
+  generated: "Wygenerowano"
 
 common:
   total: "Suma"
