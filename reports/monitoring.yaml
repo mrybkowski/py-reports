@@ -16,13 +16,13 @@ footer:
   environment: "production"
 
 columns:
-  - name: "LP"
-    field: "LP"
-    label: "LP"
-    label_key: "monitoring.columns.lp"
+  - name: "No"
+    field: "No"
+    label: "No"
+    label_key: "monitoring.columns.no"
     type: "number"
-    width: "50px"
-    align: "center"
+    width: "25%"
+    align: "left"
     sortable: true
 
   - name: "PersonId"
@@ -30,8 +30,8 @@ columns:
     label: "ID Osoby"
     label_key: "monitoring.columns.person_id"
     type: "string"
-    width: "100px"
-    align: "center"
+    width: "25%"
+    align: "left"
     sortable: true
 
   - name: "PersonNID"
@@ -39,8 +39,8 @@ columns:
     label: "NID Osoby"
     label_key: "monitoring.columns.person_nid"
     type: "string"
-    width: "120px"
-    align: "center"
+    width: "25%"
+    align: "left"
     sortable: true
 
   - name: "IsStationary"
@@ -48,8 +48,8 @@ columns:
     label: "Stacjonarne"
     label_key: "monitoring.columns.is_stationary"
     type: "boolean"
-    width: "80px"
-    align: "center"
+    width: "25%"
+    align: "left"
     sortable: true
 
   - name: "Zones"
@@ -57,7 +57,7 @@ columns:
     label: "Strefy"
     label_key: "monitoring.columns.zones"
     type: "array"
-    width: "150px"
+    width: "25%"
     align: "left"
     sortable: false
     format: "join"
@@ -67,8 +67,8 @@ columns:
     label: "Start Monitoringu"
     label_key: "monitoring.columns.monitoring_start"
     type: "datetime"
-    width: "150px"
-    align: "center"
+    width: "25%"
+    align: "left"
     sortable: true
     format: "short"
 
@@ -77,18 +77,18 @@ columns:
     label: "Planowane Zakończenie"
     label_key: "monitoring.columns.planned_end"
     type: "datetime"
-    width: "150px"
-    align: "center"
+    width: "25%"
+    align: "left"
     sortable: true
     format: "short"
 
-  - name: "Duration"
-    field: "Duration"
+  - name: "SentenceLength"
+    field: "SentenceLength"
     label: "Czas Trwania"
     label_key: "monitoring.columns.duration"
     type: "string"
-    width: "120px"
-    align: "center"
+    width: "25%"
+    align: "left"
     sortable: true
 
 # MongoDB aggregation pipeline
@@ -99,24 +99,20 @@ pipeline:
   - $match:
       "Monitorings.PersonStatus": "InMonitoring"
   - $addFields:
-      LP: { $add: ["$_id", 0] }
       IsStationary: { $ifNull: ["$Monitorings.IsStationary", false] }
       Zones: { $ifNull: ["$Monitorings.Zones", []] }
       MonitoringStart: "$Monitorings.ValidFrom"
       PlannedEnd: "$Monitorings.ValidTo"
       Duration: "Obliczane w aplikacji"
+      Status: "Aktywny"
+      Notes: "Brak uwag"
   - $sort:
       MonitoringStart: 1
-  - $limit: 100
+  - $limit: 20
   - $project:
       _id: 1
       IdAsString: 1
       NationalIdentifier: 1
-      LP: 1
-      IsStationary: 1
-      Zones: 1
-      MonitoringStart: 1
-      PlannedEnd: 1
       Duration: 1
 
 # Grouping configuration

@@ -78,11 +78,16 @@ class TableTransformer:
         """Transform data rows with formatting."""
         rows = []
         
-        for row_data in data:
+        for index, row_data in enumerate(data, 1):
             row = {}
             
             for col in columns:
                 field_value = self._get_nested_value(row_data, col.field)
+                
+                # Special handling for "No" field - use row number starting from 1
+                if col.field == "No":
+                    field_value = index
+                
                 formatted_value = self._format_cell_value(field_value, col)
                 
                 row[col.field] = {

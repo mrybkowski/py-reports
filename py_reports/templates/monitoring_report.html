@@ -3,20 +3,32 @@
   {% if report.main_data.table.rows %}
   <div class="table-container">
     <table class="data-table">
+      {% set column_groups = group_columns(config.columns) %} {% for row in
+      report.main_data.table.rows %} {% set outer_loop = loop %} {% for
+      column_group in column_groups %}
+      <!-- Header row for group {{ loop.index }} -->
       <thead>
-        <tr>
-          {% for column in config.columns %}
-          <th class="text-{{ column.align | default('left') }}">
+        <tr
+          class="header-row-{{ loop.index }} {% if outer_loop.index > 1 %}header-repeat{% endif %}"
+        >
+          {% for column in column_group %}
+          <th
+            class="text-{{ column.align | default('left') }}"
+            style="width: {{ column.width | default('auto') }};"
+          >
             {{ t(column.label_key) if column.label_key else column.label }}
           </th>
           {% endfor %}
         </tr>
       </thead>
+      <!-- Data row for group {{ loop.index }} -->
       <tbody>
-        {% for row in report.main_data.table.rows %}
-        <tr class="monitoring-row">
-          {% for column in config.columns %}
-          <td class="text-{{ column.align }}">
+        <tr class="monitoring-row data-row-{{ loop.index0 }}">
+          {% for column in column_group %}
+          <td
+            class="text-{{ column.align }}"
+            style="width: {{ column.width | default('auto') }};"
+          >
             {% set cell_data = row[column.field] %} {% if
             cell_data.formatted_value %} {% if column.name == "LP" %}
             <span class="monitoring-lp">{{ cell_data.formatted_value }}</span>
@@ -46,6 +58,18 @@
             <span class="monitoring-duration"
               >{{ cell_data.formatted_value }}</span
             >
+            {% elif column.name == "Status" %}
+            <span class="monitoring-status"
+              >{{ cell_data.formatted_value }}</span
+            >
+            {% elif column.name == "Notes" %}
+            <span class="monitoring-notes"
+              >{{ cell_data.formatted_value }}</span
+            >
+            {% elif column.name == "EmptyColumn" %}
+            <span class="monitoring-empty"
+              >{{ cell_data.formatted_value or "—" }}</span
+            >
             {% else %}
             <span class="monitoring-field"
               >{{ cell_data.formatted_value }}</span
@@ -56,8 +80,8 @@
           </td>
           {% endfor %}
         </tr>
-        {% endfor %}
       </tbody>
+      {% endfor %} {% endfor %}
     </table>
   </div>
   {% else %}

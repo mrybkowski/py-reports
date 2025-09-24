@@ -59,7 +59,8 @@ class TemplateEngine:
             'reversed': reversed,
             'enumerate': enumerate,
             'zip': zip,
-            'range': range
+            'range': range,
+            'group_columns': self._group_columns
         })
     
     def _translate(self, key: str, **kwargs) -> str:
@@ -70,6 +71,38 @@ class TemplateEngine:
         """Get current time formatted for the locale."""
         from datetime import datetime
         return self.formatter.format_datetime(datetime.now())
+    
+    def _group_columns(self, columns: list, max_width: int = 100) -> list:
+        """
+        Group columns into rows based on their width percentages.
+        
+        Args:
+            columns: List of column configurations
+            max_width: Maximum width percentage per row (default 100%)
+            
+        Returns:
+            List of column groups (rows)
+        """
+        groups = []
+        current_group = []
+        current_width = 0
+        
+        for column in columns:
+            width = int(column.get('width', '0%').replace('%', ''))
+            
+            if current_width + width > max_width and current_group:
+                # Start new row
+                groups.append(current_group)
+                current_group = [column]
+                current_width = width
+            else:
+                current_group.append(column)
+                current_width += width
+        
+        if current_group:
+            groups.append(current_group)
+        
+        return groups
     
     def render_template(self, template_name: str, context: Dict[str, Any]) -> str:
         """

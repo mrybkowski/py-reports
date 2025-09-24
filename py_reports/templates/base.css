@@ -99,6 +99,60 @@ p {
   border-right: none;
 }
 
+/* Multi-row header styles */
+.data-table .header-row-1 {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  color: white;
+}
+
+.data-table .header-row-2 {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: white;
+}
+
+.data-table .header-row-3 {
+  background: linear-gradient(135deg, #27ae60, #229954);
+  color: white;
+}
+
+.data-table .header-row-4 {
+  background: linear-gradient(135deg, #f39c12, #e67e22);
+  color: white;
+}
+
+/* Repeated header styles - subtle gray */
+.data-table .header-repeat {
+  background: #f8f9fa !important;
+  color: #6c757d !important;
+  border-top: 1px solid #dee2e6;
+  font-size: 10px;
+  opacity: 0.8;
+}
+
+.data-table .header-repeat th {
+  border-right: 1px solid #dee2e6;
+  font-weight: normal;
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+/* Data row styles for multi-row layout */
+.data-table .data-row-1 {
+  background-color: #fff;
+}
+
+.data-table .data-row-2 {
+  background-color: #f8f9fa;
+}
+
+.data-table .data-row-3 {
+  background-color: #e8f5e8;
+}
+
+.data-table .data-row-4 {
+  background-color: #fff3cd;
+}
+
 /* Table Body */
 .data-table tbody tr {
   border-bottom: 1px solid #ecf0f1;
@@ -245,6 +299,26 @@ p {
   color: #2c3e50;
 }
 
+.monitoring-status {
+  font-weight: bold;
+  color: #27ae60;
+  text-transform: uppercase;
+  font-size: 10px;
+}
+
+.monitoring-notes {
+  color: #7f8c8d;
+  font-style: italic;
+  font-size: 10px;
+}
+
+.monitoring-empty {
+  color: #bdc3c7;
+  font-style: italic;
+  font-size: 10px;
+  text-align: center;
+}
+
 /* Summary and Totals Tables */
 .summary,
 .totals {
@@ -325,7 +399,6 @@ p {
 @media print {
   .table-container {
     box-shadow: none;
-    border: 1px solid #ddd;
   }
 
   .data-table tbody tr:hover {

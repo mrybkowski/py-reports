@@ -155,14 +155,12 @@ table th {
   color: #495057;
   font-weight: bold;
   padding: 0.3cm 0.2cm;
-  border: 1px solid #dee2e6;
   text-align: left;
   vertical-align: top;
 }
 
 table td {
   padding: 0.2cm;
-  border: 1px solid #dee2e6;
   vertical-align: top;
 }
 
